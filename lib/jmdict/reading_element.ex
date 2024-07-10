@@ -14,8 +14,6 @@ defmodule Jmdict.ReadingElement do
   defstruct [:reb, re_restr: [], re_inf: [], re_pri: nil, re_nokanji: false]
 
   def new(element) when Kernel.elem(element, 1) == :r_ele do
-    IO.inspect(element, label: "reb")
-
     %__MODULE__{
       reb: xpath(element, ~x"//reb/text()"s),
       re_nokanji: xpath(element, ~x".//re_nokanji"o) |> format_nokanji(),
@@ -26,7 +24,6 @@ defmodule Jmdict.ReadingElement do
   end
 
   def parse_list([element | _] = elements) when Kernel.elem(element, 1) == :r_ele do
-    # def parse_list([{:xmlElement, :r_ele, :r_ele, _, _, _, _, _, _, _, _, _}] = elements) do
     elements
     |> Enum.map(&__MODULE__.new(&1))
   end

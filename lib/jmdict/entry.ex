@@ -14,7 +14,7 @@ defmodule Jmdict.Entry do
       when is_integer(ent_seq) and is_list(k_ele) and is_list(r_ele) and is_list(sense) do
     reading_elements = ReadingElement.parse_list(r_ele)
     kanji_elements = KanjiElement.parse_list(k_ele)
-    sense_collection = []
+    sense_collection = Sense.parse_list(sense)
 
     %Jmdict.Entry{
       ent_seq: ent_seq,

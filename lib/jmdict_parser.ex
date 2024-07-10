@@ -27,7 +27,7 @@ defmodule JmdictParser do
     |> Stream.map(fn {_, doc} ->
       # IO.inspect(doc)
       # IO.inspect(doc, label: "unchanged")
-      IO.inspect(~x"")
+      #IO.inspect(~x"")
 
       cool =
         %{
