@@ -18,35 +18,31 @@ defmodule JmdictParser do
     :world
   end
 
-  def read(count \\ 1) do
-    # extract = fn {num, _} -> num end
+  def read() do
+    ent_seq = ~x".//ent_seq/text()"i
+    k_ele = ~x".//k_ele"l
+    r_ele = ~x".//r_ele"l
+    sense = ~x".//sense"l
 
     jmdict_file()
-    |> File.stream!()
+    |> File.stream!(read_ahead: 250_000)
     |> stream_tags!([:entry], discard: [:entry])
-    |> Stream.map(fn {_, doc} ->
-      # IO.inspect(doc)
-      # IO.inspect(doc, label: "unchanged")
-      #IO.inspect(~x"")
-
+    |> Flow.from_enumerable()
+    |> Flow.map(fn {_, doc} ->
       cool =
         %{
-          ent_seq: xpath(doc, ~x".//ent_seq/text()"i),
-          k_ele: xpath(doc, ~x".//k_ele"l),
-          r_ele: xpath(doc, ~x".//r_ele"l),
-          sense: xpath(doc, ~x".//sense"l)
+          ent_seq: xpath(doc, ent_seq),
+          k_ele: xpath(doc, k_ele),
+          r_ele: xpath(doc, r_ele),
+          sense: xpath(doc, sense)
         }
         |> Jmdict.Entry.new()
 
-      IO.inspect(cool, label: "Formatted")
+      IO.inspect(cool.ent_seq, label: "Processed")
 
       cool
     end)
-    |> Stream.take(count)
-    |> Enum.reverse()
-    |> Enum.take(5)
-
-    # |> IO.inspect(label: "First 15?")
+    |> Enum.to_list()
   end
 
   def jmdict_file do

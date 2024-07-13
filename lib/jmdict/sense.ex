@@ -60,7 +60,7 @@ defmodule Jmdict.Sense do
             gloss: [],
             example: []
 
-  def new(element) when Kernel.elem(element, 1) == :sense do
+  def new(element, {pos, field}) when Kernel.elem(element, 1) == :sense do
     %__MODULE__{
       stagk: xpath(element, ~x".//stagk/text()"l) |> Enum.map(&to_string/1),
       stagr: xpath(element, ~x".//stagr/text()"l) |> Enum.map(&to_string/1),
@@ -72,12 +72,11 @@ defmodule Jmdict.Sense do
         end),
       ant: xpath(element, ~x".//ant/text()"s) |> parse_ref(),
       # how do I handle grabbing pos/field from previous entries? not sure yet!
-      pos: xpath(element, ~x".//pos/text()"l) |> Enum.map(&to_string/1),
-      field: xpath(element, ~x".//field/text()"l) |> Enum.map(&to_string/1),
+      pos: pos,
+      field: field,
       misc: xpath(element, ~x".//misc/text()"l) |> Enum.map(&to_string/1),
       lsource: xpath(element, ~x".//lsource"el) |> Enum.map(&parse_lsource/1),
       dial: xpath(element, ~x".//dial/text()"l) |> Enum.map(&to_string/1),
-      # do the attributes for gloss later.
       gloss: xpath(element, ~x".//gloss"el) |> Enum.map(&parse_gloss/1),
       s_inf: xpath(element, ~x".//stagk/text()"s) |> parse_ref()
     }
@@ -85,7 +84,30 @@ defmodule Jmdict.Sense do
 
   def parse_list([element | _] = elements) when Kernel.elem(element, 1) == :sense do
     elements
-    |> Enum.map(&__MODULE__.new(&1))
+    |> Enum.reduce({[], {[], []}}, fn item, {processed, last_pos_field} ->
+      current_pos = xpath(item, ~x".//pos/text()"l) |> Enum.map(&to_string/1)
+      current_field = xpath(item, ~x".//field/text()"l) |> Enum.map(&to_string/1)
+
+      next_pos_field =
+        maybe_get_next_pos_field(last_pos_field, {current_pos, current_field})
+
+      {[__MODULE__.new(item, next_pos_field) | processed], next_pos_field}
+    end)
+    |> then(fn {processed, _} -> processed end)
+    |> Enum.reverse()
+  end
+
+  def maybe_get_next_pos_field({[], []}, current), do: current
+  def maybe_get_next_pos_field(previous, {[], []}), do: previous
+
+  def maybe_get_next_pos_field(previous, current) do
+    {prev_pos, prev_field} = previous
+    {current_pos, current_field} = current
+
+    next_pos = if length(current_pos) == 0, do: prev_pos, else: current_pos
+    next_field = if length(current_field) == 0, do: prev_field, else: current_field
+
+    {next_pos, next_field}
   end
 
   def parse_ref(""), do: nil
