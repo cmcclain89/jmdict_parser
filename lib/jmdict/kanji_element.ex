@@ -1,4 +1,4 @@
-defmodule Jmdict.KanjiElement do
+defmodule YomiKomi.Jmdict.KanjiElement do
   import SweetXml
 
   @moduledoc """

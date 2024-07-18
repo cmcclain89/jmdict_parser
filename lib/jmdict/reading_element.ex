@@ -1,4 +1,4 @@
-defmodule Jmdict.ReadingElement do
+defmodule YomiKomi.Jmdict.ReadingElement do
   import SweetXml
 
   @moduledoc """

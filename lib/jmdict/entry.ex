@@ -1,6 +1,6 @@
-defmodule Jmdict.Entry do
+defmodule YomiKomi.Jmdict.Entry do
   # import SweetXml
-  alias Jmdict.{KanjiElement, ReadingElement, Sense}
+  alias YomiKomi.Jmdict.{KanjiElement, ReadingElement, Sense}
 
   @moduledoc """
   :ent_seq - a unique identifier
@@ -16,7 +16,7 @@ defmodule Jmdict.Entry do
     kanji_elements = KanjiElement.parse_list(k_ele)
     sense_collection = Sense.parse_list(sense)
 
-    %Jmdict.Entry{
+    %__MODULE__{
       ent_seq: ent_seq,
       r_ele: reading_elements,
       k_ele: kanji_elements,

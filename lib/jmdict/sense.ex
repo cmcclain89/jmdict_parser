@@ -1,4 +1,4 @@
-defmodule Jmdict.Sense do
+defmodule YomiKomi.Jmdict.Sense do
   @moduledoc """
   The translational equivalent of the Japanese word. Basically, the meaning.
 

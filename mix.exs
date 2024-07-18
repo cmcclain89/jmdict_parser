@@ -1,4 +1,4 @@
-defmodule JmdictParser.MixProject do
+defmodule YomiKomi.MixProject do
   use Mix.Project
 
   def project do

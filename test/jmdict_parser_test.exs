@@ -1,8 +1,8 @@
-defmodule JmdictParserTest do
+defmodule YomiKomiTest do
   use ExUnit.Case
-  doctest JmdictParser
+  doctest YomiKomi
 
   test "greets the world" do
-    assert JmdictParser.hello() == :world
+    assert YomiKomi.hello() == :world
   end
 end
