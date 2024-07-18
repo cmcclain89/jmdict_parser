@@ -1,15 +1,29 @@
 defmodule JmdictParser do
   import SweetXml
 
-  @ent_seq ~x".//ent_seq/text()"i
-  @k_ele ~x".//k_ele"l
-  @r_ele ~x".//r_ele"l
-  @sense ~x".//sense"l
-
   @moduledoc """
   Documentation for `JmdictParser`.
   """
-  def read_to_end() do
+
+  @doc """
+  Hello world.
+
+  ## Examples
+
+      iex> JmdictParser.hello()
+      :world
+
+  """
+  def hello do
+    :world
+  end
+
+  def read() do
+    ent_seq = ~x".//ent_seq/text()"i
+    k_ele = ~x".//k_ele"l
+    r_ele = ~x".//r_ele"l
+    sense = ~x".//sense"l
+
     jmdict_file()
     |> File.stream!(read_ahead: 250_000)
     |> stream_tags!([:entry], discard: [:entry])
@@ -17,10 +31,10 @@ defmodule JmdictParser do
     |> Flow.map(fn {_, doc} ->
       cool =
         %{
-          ent_seq: xpath(doc, @ent_seq),
-          k_ele: xpath(doc, @k_ele),
-          r_ele: xpath(doc, @r_ele),
-          sense: xpath(doc, @sense)
+          ent_seq: xpath(doc, ent_seq),
+          k_ele: xpath(doc, k_ele),
+          r_ele: xpath(doc, r_ele),
+          sense: xpath(doc, sense)
         }
         |> Jmdict.Entry.new()
 
