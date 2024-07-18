@@ -1,6 +1,8 @@
 defmodule Jmdict.KanjiElement do
   import SweetXml
 
+  alias Jmdict.Parsers.KanjiElementParser
+
   @moduledoc """
   Represents the Kanji element.
 
@@ -33,20 +35,13 @@ defmodule Jmdict.KanjiElement do
   def new(element) when Kernel.elem(element, 1) == :k_ele do
     %__MODULE__{
       keb: xpath(element, ~x"//keb/text()"s),
-      ke_inf: xpath(element, ~x".//ke_inf/text()"s) |> format_ke_inf(),
+      ke_inf: xpath(element, ~x".//ke_inf/text()"s) |> KanjiElementParser.format_ke_inf(),
       ke_pri: xpath(element, ~x".//ke_pri/text()"l) |> Enum.map(&to_string/1)
     }
   end
 
-  def parse_list([element | _] = elements) when Kernel.elem(element, 1) == :k_ele do
+  def from_list([element | _] = elements) when Kernel.elem(element, 1) == :k_ele do
     elements
     |> Enum.map(&__MODULE__.new(&1))
   end
-
-  def parse_list([]) do
-    []
-  end
-
-  def format_ke_inf(""), do: nil
-  def format_ke_inf(val), do: val
 end

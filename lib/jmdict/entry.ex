@@ -12,9 +12,9 @@ defmodule Jmdict.Entry do
 
   def new(%{ent_seq: ent_seq, k_ele: k_ele, r_ele: r_ele, sense: sense})
       when is_integer(ent_seq) and is_list(k_ele) and is_list(r_ele) and is_list(sense) do
-    reading_elements = ReadingElement.parse_list(r_ele)
-    kanji_elements = KanjiElement.parse_list(k_ele)
-    sense_collection = Sense.parse_list(sense)
+    reading_elements = ReadingElement.from_list(r_ele)
+    kanji_elements = KanjiElement.from_list(k_ele)
+    sense_collection = Sense.from_list(sense)
 
     %Jmdict.Entry{
       ent_seq: ent_seq,

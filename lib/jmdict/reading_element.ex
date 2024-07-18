@@ -1,6 +1,8 @@
 defmodule Jmdict.ReadingElement do
   import SweetXml
 
+  alias Jmdict.Parsers.ReadingElementParser
+
   @moduledoc """
   Represents the reading element. May be the primary element if no keb
 
@@ -16,21 +18,15 @@ defmodule Jmdict.ReadingElement do
   def new(element) when Kernel.elem(element, 1) == :r_ele do
     %__MODULE__{
       reb: xpath(element, ~x"//reb/text()"s),
-      re_nokanji: xpath(element, ~x".//re_nokanji"o) |> format_nokanji(),
+      re_nokanji: xpath(element, ~x".//re_nokanji"o) |> ReadingElementParser.format_nokanji(),
       re_restr: xpath(element, ~x".//re_restr/text()"l) |> Enum.map(&to_string/1),
-      re_inf: xpath(element, ~x".//re_inf/text()"s) |> format_re_inf(),
+      re_inf: xpath(element, ~x".//re_inf/text()"s) |> ReadingElementParser.format_re_inf(),
       re_pri: xpath(element, ~x".//re_pri/text()"l) |> Enum.map(&to_string/1)
     }
   end
 
-  def parse_list([element | _] = elements) when Kernel.elem(element, 1) == :r_ele do
+  def from_list([element | _] = elements) when Kernel.elem(element, 1) == :r_ele do
     elements
     |> Enum.map(&__MODULE__.new(&1))
   end
-
-  def format_nokanji(nil), do: false
-  def format_nokanji(_), do: true
-
-  def format_re_inf(""), do: nil
-  def format_re_inf(val), do: val
 end
