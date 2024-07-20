@@ -49,6 +49,7 @@ defmodule YomiKomi do
     literal = ~x".//literal/text()"s
     codepoint = ~x".//codepoint"e
     radical = ~x".//radical"e
+    misc = ~x".//misc"e
 
     kanjidic2_file()
     |> File.stream!(read_ahead: 250_000)
@@ -58,7 +59,8 @@ defmodule YomiKomi do
       %{
         literal: xpath(doc, literal),
         codepoint: xpath(doc, codepoint),
-        radical: xpath(doc, radical)
+        radical: xpath(doc, radical),
+        misc: xpath(doc, misc)
       }
       |> YomiKomi.Kanjidic2.Character.new()
     end)
