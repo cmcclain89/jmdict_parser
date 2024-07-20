@@ -4,7 +4,7 @@ defmodule YomiKomi.Kanjidic2.Codepoint do
 
   def new(element) when Kernel.elem(element, 1) == :cp_value do
     %__MODULE__{
-      cp_value: xpath(element, ~x".//cp_value/text()"s),
+      cp_value: xpath(element, ~x".///text()"s),
       cp_type: xpath(element, ~x".//attribute::cp_type"s)
     }
   end
