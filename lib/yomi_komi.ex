@@ -50,6 +50,8 @@ defmodule YomiKomi do
     codepoint = ~x".//codepoint"e
     radical = ~x".//radical"e
     misc = ~x".//misc"e
+    dic_number = ~x".//dic_number"e
+    query_code = ~x".//query_code"e
 
     kanjidic2_file()
     |> File.stream!(read_ahead: 250_000)
@@ -60,7 +62,9 @@ defmodule YomiKomi do
         literal: xpath(doc, literal),
         codepoint: xpath(doc, codepoint),
         radical: xpath(doc, radical),
-        misc: xpath(doc, misc)
+        misc: xpath(doc, misc),
+        dic_number: xpath(doc, dic_number),
+        query_code: xpath(doc, query_code)
       }
       |> YomiKomi.Kanjidic2.Character.new()
     end)
