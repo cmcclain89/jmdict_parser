@@ -17,9 +17,9 @@ defmodule YomiKomi.Jmdict.ReadingElement do
     %__MODULE__{
       reb: xpath(element, ~x"//reb/text()"s),
       re_nokanji: xpath(element, ~x".//re_nokanji"o) |> format_nokanji(),
-      re_restr: xpath(element, ~x".//re_restr/text()"l) |> Enum.map(&to_string/1),
-      re_inf: xpath(element, ~x".//re_inf/text()"s) |> format_re_inf(),
-      re_pri: xpath(element, ~x".//re_pri/text()"l) |> Enum.map(&to_string/1)
+      re_restr: xpath(element, ~x".//re_restr/text()"ls),
+      re_inf: xpath(element, ~x".//re_inf/text()"ls),
+      re_pri: xpath(element, ~x".//re_pri/text()"ls)
     }
   end
 
@@ -31,6 +31,4 @@ defmodule YomiKomi.Jmdict.ReadingElement do
   def format_nokanji(nil), do: false
   def format_nokanji(_), do: true
 
-  def format_re_inf(""), do: nil
-  def format_re_inf(val), do: val
 end

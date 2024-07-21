@@ -29,7 +29,7 @@ defmodule YomiKomi.Jmdict.Sense do
   - :dial - for words specifically associated with regional dialects in Japnaese. Refer to set codes.
 
   - :gloss - Within each word will be one or more glosses i.e. target-language words or phrases
-  that are equivalents to the Japanese word. I'm not actually sure I need this.
+  that are equivalents to the Japanese word.
     - xml:lang CDATA "eng"
     - g_gend - defines gender of the gloss. When absent the gender is either not relevant or yet to be provided
     - g_type - specifies its of specific type i.e. "lit" (literal), "fig" (figurative), "expl" (explanation)
@@ -62,21 +62,16 @@ defmodule YomiKomi.Jmdict.Sense do
 
   def new(element, {pos, field}) when Kernel.elem(element, 1) == :sense do
     %__MODULE__{
-      stagk: xpath(element, ~x".//stagk/text()"l) |> Enum.map(&to_string/1),
-      stagr: xpath(element, ~x".//stagr/text()"l) |> Enum.map(&to_string/1),
-      xref:
-        xpath(element, ~x".//xref/text()"l)
-        |> Enum.map(fn ref ->
-          to_string(ref)
-          |> parse_ref()
-        end),
+      stagk: xpath(element, ~x".//stagk/text()"ls),
+      stagr: xpath(element, ~x".//stagr/text()"ls),
+      xref: xpath(element, ~x".//xref/text()"ls) |> Enum.map(&parse_ref/1),
       ant: xpath(element, ~x".//ant/text()"s) |> parse_ref(),
       # how do I handle grabbing pos/field from previous entries? not sure yet!
       pos: pos,
       field: field,
-      misc: xpath(element, ~x".//misc/text()"l) |> Enum.map(&to_string/1),
+      misc: xpath(element, ~x".//misc/text()"ls),
       lsource: xpath(element, ~x".//lsource"el) |> Enum.map(&parse_lsource/1),
-      dial: xpath(element, ~x".//dial/text()"l) |> Enum.map(&to_string/1),
+      dial: xpath(element, ~x".//dial/text()"ls),
       gloss: xpath(element, ~x".//gloss"el) |> Enum.map(&parse_gloss/1),
       s_inf: xpath(element, ~x".//stagk/text()"s) |> parse_ref()
     }
@@ -85,8 +80,8 @@ defmodule YomiKomi.Jmdict.Sense do
   def parse_list([element | _] = elements) when Kernel.elem(element, 1) == :sense do
     elements
     |> Enum.reduce({[], {[], []}}, fn item, {processed, last_pos_field} ->
-      current_pos = xpath(item, ~x".//pos/text()"l) |> Enum.map(&to_string/1)
-      current_field = xpath(item, ~x".//field/text()"l) |> Enum.map(&to_string/1)
+      current_pos = xpath(item, ~x".//pos/text()"ls)
+      current_field = xpath(item, ~x".//field/text()"ls)
 
       next_pos_field =
         maybe_get_next_pos_field(last_pos_field, {current_pos, current_field})
