@@ -1,5 +1,5 @@
 defmodule YomiKomi.Kanjidic2.Character do
-  alias YomiKomi.Kanjidic2.{Codepoint, DicNumber, Misc, QueryCode, Radical}
+  alias YomiKomi.Kanjidic2.{Codepoint, DicNumber, Misc, QueryCode, Radical, ReadingMeaning}
 
   defstruct [:literal, :codepoint, :radical, :misc, :dic_number, :query_code, :reading_meaning]
 
@@ -10,7 +10,8 @@ defmodule YomiKomi.Kanjidic2.Character do
       radical: radical,
       misc: misc,
       dic_number: dic_number,
-      query_code: query_code
+      query_code: query_code,
+      reading_meaning: reading_meaning
     } = character
 
     %__MODULE__{
@@ -20,7 +21,7 @@ defmodule YomiKomi.Kanjidic2.Character do
       misc: Misc.new(misc),
       dic_number: DicNumber.parse_elements(dic_number),
       query_code: QueryCode.parse_elements(query_code),
-      reading_meaning: nil
+      reading_meaning: ReadingMeaning.new(reading_meaning)
     }
   end
 end

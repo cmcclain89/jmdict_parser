@@ -52,6 +52,7 @@ defmodule YomiKomi do
     misc = ~x".//misc"e
     dic_number = ~x".//dic_number"e
     query_code = ~x".//query_code"e
+    reading_meaning = ~x".//reading_meaning"e
 
     kanjidic2_file()
     |> File.stream!(read_ahead: 250_000)
@@ -64,11 +65,13 @@ defmodule YomiKomi do
         radical: xpath(doc, radical),
         misc: xpath(doc, misc),
         dic_number: xpath(doc, dic_number),
-        query_code: xpath(doc, query_code)
+        query_code: xpath(doc, query_code),
+        reading_meaning: xpath(doc, reading_meaning)
       }
       |> YomiKomi.Kanjidic2.Character.new()
     end)
     |> Enum.to_list()
+    |> Enum.filter(fn x -> is_nil(x.reading_meaning) end)
   end
 
   def jmdict_file do
