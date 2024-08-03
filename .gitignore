@@ -24,3 +24,7 @@ jmdict_parser-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# please get out of my repo!
+.DS_store
+/priv/.DS_store
