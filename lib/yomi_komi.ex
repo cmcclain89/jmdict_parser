@@ -112,19 +112,34 @@ defmodule YomiKomi do
     |> Enum.to_list()
   end
 
+  def read(:kradfile) do
+    kradfile_u_file()
+    |> File.stream!(read_ahead: 250_000)
+    |> Flow.from_enumerable()
+    |> Flow.filter(fn line -> String.first(line) != "#" end)
+    |> Flow.map(fn line ->
+      YomiKomi.Kradfile.RadicalDecomposition.new(line)
+    end)
+    |> Enum.to_list()
+  end
+
   def jmdict_file do
-    Application.app_dir(:jmdict_parser, "/priv/JMdict_e.xml")
+    Application.app_dir(:yomikomi, "/priv/JMdict_e.xml")
   end
 
   def kanjidic2_file do
-    Application.app_dir(:jmdict_parser, "/priv/kanjidic2.xml")
+    Application.app_dir(:yomikomi, "/priv/kanjidic2.xml")
   end
 
   def jmnedict_file do
-    Application.app_dir(:jmdict_parser, "/priv/JMnedict.xml")
+    Application.app_dir(:yomikomi, "/priv/JMnedict.xml")
   end
 
   def tatoeba_file do
-    Application.app_dir(:jmdict_parser, "/priv/examples.utf.tsv")
+    Application.app_dir(:yomikomi, "/priv/examples.utf.tsv")
+  end
+
+  def kradfile_u_file do
+    Application.app_dir(:yomikomi, "/priv/kradfile-u.txt")
   end
 end
