@@ -74,11 +74,57 @@ defmodule YomiKomi do
     |> Enum.filter(fn x -> is_nil(x.reading_meaning) end)
   end
 
+  def read(:jmnedict) do
+    ent_seq = ~x".//ent_seq/text()"i
+    k_ele = ~x".//k_ele"l
+    r_ele = ~x".//r_ele"l
+    trans = ~x".//trans"e
+
+    jmnedict_file()
+    |> File.stream!(read_ahead: 250_000)
+    |> stream_tags!([:entry], discard: [:entry], dtd: :internal_only)
+    |> Flow.from_enumerable()
+    |> Flow.map(fn {_, doc} ->
+      cool =
+        %{
+          ent_seq: xpath(doc, ent_seq),
+          k_ele: xpath(doc, k_ele),
+          r_ele: xpath(doc, r_ele),
+          trans: xpath(doc, trans)
+        }
+        |> YomiKomi.Jmnedict.Entry.new()
+
+      IO.inspect(cool.ent_seq, label: "Processed")
+
+      cool
+    end)
+    |> Enum.to_list()
+  end
+
+  def read(:tatoeba) do
+    tatoeba_file()
+    |> File.stream!(read_ahead: 250_000)
+    |> Flow.from_enumerable()
+    |> Flow.filter(fn line -> String.first(line) == "A" end)
+    |> Flow.map(fn line ->
+      YomiKomi.Tatoeba.Sentence.new(line)
+    end)
+    |> Enum.to_list()
+  end
+
   def jmdict_file do
     Application.app_dir(:jmdict_parser, "/priv/JMdict_e.xml")
   end
 
   def kanjidic2_file do
     Application.app_dir(:jmdict_parser, "/priv/kanjidic2.xml")
+  end
+
+  def jmnedict_file do
+    Application.app_dir(:jmdict_parser, "/priv/JMnedict.xml")
+  end
+
+  def tatoeba_file do
+    Application.app_dir(:jmdict_parser, "/priv/examples.utf.tsv")
   end
 end
