@@ -28,3 +28,6 @@ jmdict_parser-*.tar
 # please get out of my repo!
 .DS_store
 /priv/.DS_store
+
+# we don't want to send any of these up
+/priv/*
